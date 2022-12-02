@@ -44,11 +44,13 @@ app.post("/", upload.array("file"), async (req, res) => {
         const split = data.split(/\r?\n/);
         var seq = "";
         for (i = 0; i < split.length; i++) {
+            var header = null;
             if (split[i][0] == ">") {
                 if (i != 0) {
+                    header = split[i];
                     if (seq.includes(req.body.motif)) {
                         const index_list = indexes(seq, req.body.motif);
-                        result.push([seq, index_list]);
+                        result.push([seq, index_list, header]);
                     }
                     seq = "";
                 }
@@ -59,7 +61,7 @@ app.post("/", upload.array("file"), async (req, res) => {
         }
         if (seq.includes(req.body.motif)) {
             const index_list = indexes(seq, req.body.motif);
-            result.push([seq, index_list]);
+            result.push([seq, index_list, header]);
         }
         // for (i = 0; i < seqs.length; i++) {
         //     console.log(seqs[i]);
